@@ -1,0 +1,365 @@
+%% task1
+clc;
+clear all;
+close all;
+x=[1 1 1 1;1 1 1 1;1 1 1 1;1 1 1 1]; % input signal
+h=[1 2 3 4;5 6 7 8];  %impulse response
+A=flipud(conv2(x,h));% convolution of input and impulse signals and flip up to down 
+f=filter2(h,x);      %fitering impulse with input 
+I=mat2gray(A);        % converting the matrix to gray scale to get monochrome image
+figure
+imshow(I,[0 1]);    % showing as image 
+figure
+imshow(ones(16,1)*(0:1/15:1)); % showing the image of input matrix with scaling
+figure,
+load mandrill;        % loading the inbuilt image
+imshow(X,map);        % showing the indexed color image 
+I1=ind2gray(X,map);   % coverting the index to gray to get monochrome image 
+figure
+imshow(I1)
+colormap('gray')
+
+%% 2a
+
+clc;
+clear all;
+close all;
+    
+n=input('enter the n value');
+m=input('enter the m value');
+ N1=2^n;       
+ N2=2^n;        
+ n1=0:N1-1;   
+ n2=0:N2-1;
+ 
+ j=sqrt(-1);
+ x=randi(10,N1,N2);   
+ for k1=1:N1       
+     F1(k1,:)=exp(-j*(2*pi/N1)*(k1-1)*n1); %obtained F1 matrix
+ end
+for k2=1:N2
+    F2(:,k2)=exp(-j*(2*pi/N2)*(k2-1)*n2'); %obtained F2 matrix
+end
+ X=(F1*x*F2) %theoreotical DFT values in frequency domian
+Xf=fft2(x)   %DFT using matlab
+
+%% 2b
+        
+N11=8; N21=8;
+x1=ones(N11,N21);
+X1=fft2(x1,64,64)   
+axis=-pi:2*pi/63:pi;
+colormap('default')
+figure
+mesh(axis,axis,20*log10(abs(fftshift(X1'))+0.01)) % the constant 0.01 will render a floor at -40 DB
+xlabel('\omega_1')
+ylabel('\omega_2')
+title('Fourier transform of 2-D window w(n1,n2) plot in 3-D')
+%% 2-d plot
+colormap(jet(64))
+imagesc(20*log10(abs(fftshift(X1))+0.01)) % will put the origin of frequency in the top left corner
+colorbar
+colormap('default')
+xlabel('\omega_3')
+ylabel('\omega_4')
+title('2-D plot')
+%% with filter 
+load hhp1;
+X2=fft2(h,64,64)
+axis=-pi:2*pi/63:pi;
+colormap('default')
+figure
+mesh(axis,axis,20*log10(abs(fftshift(X2'))+0.01)) % the constant 0.01 will render a °oor at -40dB
+xlabel('\omega_1')
+ylabel('\omega_2')
+title('3-D plot with filter')
+colormap(jet(64))
+figure
+imagesc(20*log10(abs(fftshift(X2))+0.01)) % will put the origin of frequency in the top left corner
+colorbar
+colormap('default')
+xlabel('\omega_3')
+ylabel('\omega_4')
+title('2-D plot with filter')
+
+%% 2c
+
+N1=64;
+N2=64;
+n1=(0:N1-1)'*ones(1,N2);
+n2=ones(N1,1)*(0:N2-1);
+w1= 2*pi*8/64;
+w2= 2*pi*16/64;
+w3= 2*pi*8.5/64;
+w4= 2*pi*16.5/64;
+x=cos(w1*n1+w2*n2);   % cosine signal with frequencies w1,w2
+x1=cos(w3*n1+w4*n2);  % cosine signal with frequencies w3,w4
+figure
+subplot(2,1,1)
+imshow(x);
+title('plot of cosine signal with frequencies w1&w2 ')
+X=fft2(x,64,64);
+subplot(2,1,2)
+imshow(x1);
+title('plot of cosine signal with frequencies w3&w4 ')
+X1=fft2(x1,64,64);
+axis=-pi:2*pi/63:pi;
+figure,subplot(1,2,1);
+mesh(axis,axis,20*log10(abs(fftshift(X)+0.01)));   % plotting in 3-D for first cosine signal
+xlabel('\omega_1');
+ylabel('\omega_2');
+title('3-D plot for first cosine signal')
+subplot(1,2,2);
+mesh(axis,axis,20*log10(abs(fftshift(X1)+0.01)));  % plotting in 3-D for second cosine signal
+xlabel('\omega_3');
+ylabel('\omega_4');
+title('3-D plot for second cosine signal')
+
+%% 2ca
+
+N1=8;
+N2=8;
+n1=(0:N1-1)'*ones(1,N2);
+n2=ones(N1,1)*(0:N2-1);
+w1= 2*pi*1/64;
+w2= 2*pi*2/64;
+x=cos(w1*n1+w2*n2);
+figure
+imshow(x);
+title('plot of cosine signal with frequencies w1&w2 ')
+X=fft2(x,64,64);
+axis=-pi:2*pi/63:pi;
+figure,subplot(1,2,1);
+mesh(axis,axis,20*log10(abs(fftshift(X)+0.01)));   % plotting in 3-D for cosine signal
+xlabel('\omega_1');
+ylabel('\omega_2');
+title('3-D plot for cosine signal')
+subplot(122)
+imagesc(20*log10(abs(fftshift(X)+0.01)));    % plotting in 2-D for cosine signal
+xlabel('\omega_3');
+ylabel('\omega_4');
+title('2-D plot for cosine signal')
+
+%% 2cb
+
+N1=16;
+N2=16;
+n1=(0:N1-1)'*ones(1,N2);
+n2=ones(N1,1)*(0:N2-1);
+w1= 2*pi*2/64;
+w2= 2*pi*4/64;
+x=cos(w1*n1+w2*n2);
+figure
+imshow(x);
+title('plot of cosine signal with frequencies w1&w2 ')
+X=fft2(x,64,64);
+axis=-pi:2*pi/63:pi;
+figure,subplot(1,2,1);
+mesh(axis,axis,20*log10(abs(fftshift(X)+0.01)));   % plotting in 3-D for cosine signal
+xlabel('\omega_1');
+ylabel('\omega_2');
+title('3-D plot for cosine signal')
+subplot(122)
+imagesc(20*log10(abs(fftshift(X)+0.01)));    % plotting in 2-D for cosine signal
+xlabel('\omega_3');
+ylabel('\omega_4');
+title('2-D plot for cosine signal')
+
+%% 2d
+
+load mandrill;
+figure
+i=imshow(X,map);
+title('original mandrill image')
+i=ind2gray(X,map);
+i=i(1:128,120:120+256-1);  
+figure
+imshow(i);
+title('resized mandrill image')
+ib=fft2(i).*exp(1j*2*pi*rand(128,256));  % 2-DFT
+ib=real(ifft2(ib));                      %inverse 2-DFT
+ib=mat2gray(ib);                         %converting matrix to gray
+figure
+imshow(ib);                                              
+title('removed phase part');
+i_f=fft2(i)./abs(fft2(i));       % element wise division with ampliitude function
+i_f=real(ifft2(i_f));
+i_f=mat2gray(i_f);
+figure
+imshow(i_f);
+title('removed amplitude part');
+
+%% 3a
+
+clc;
+clear all;
+close all;
+load mandrill;
+figure
+i=imshow(X,map);
+title('original mandrill image')
+i=ind2gray(X,map);
+i=i(1:128,120:120+256-1);
+figure
+imshow(i);
+title('resized mandrill image')
+load hlp1;   %low pass filter of order 1
+f=filter2(h,i);
+f=mat2gray(f);
+figure
+imshow(f);
+title('frequency function of low pass filter of order 1')
+load hlp2;   %low pass filter of order 2
+f1=filter2(h,i);
+f1=mat2gray(f1);
+figure
+imshow(f1);
+title('frequency function of low pass filter of order 2')
+load hhp1;   %high pass filter of order 1
+f2=filter2(h,i);
+f2=mat2gray(f2);
+figure
+imshow(f2);
+title('frequency function of high pass filter of order 1')
+load hhp2;   %high pass filter of order 2
+f3=filter2(h,i);
+f3=mat2gray(f3);
+figure
+imshow(f3);
+title('frequency function of high pass filter of order 2')
+load hk;    % unknown filter
+f4=filter2(h,i);
+f4=mat2gray(f4);
+figure
+imshow(f4);
+title('frequency function of unknown filter')
+
+%% 3b
+
+clc;
+clear all;
+close all;
+load mandrill;
+figure
+imshow(X,map);
+title('original mandrill image')
+i=ind2gray(X,map);
+i=i(1:128,120:120+256-1);
+figure
+imshow(i);
+title('resized mandrill image')
+N1=128;
+N2=256;
+n1=(0:N1-1)'*ones(1,N2);
+n2=ones(N1,1)*(0:N2-1);
+w1= 2*pi*8/32;
+w2= 2*pi*16/32;
+x=cos((w1*n1)+(w2*n2)) % creating a cosine signal
+i1=i+x;    % adding cosine disturbance to the index
+figure
+i1=mat2gray(i1);
+imshow(i1);
+title('noisy image')
+load hlp1;    %low pass filter of order 1
+f1=filter2(h,i1);
+f1=mat2gray(f1);
+figure
+imshow(f1);
+title('low pass filtered image of order 1')
+load hlp2;    %low pass filter of order 2
+f2=filter2(h,i1);
+f2=mat2gray(f2);
+figure
+imshow(f2);
+title('low pass filtered image of order 2')
+load hhp1;   %high pass filter of order 1
+f3=filter2(h,i1);
+f3=mat2gray(f3);
+figure
+imshow(f3);
+title('high pass filtered image of order 1')
+load hhp2;   %high pass filter of order 2
+f4=filter2(h,i1);
+f4=mat2gray(f4);
+figure
+imshow(f4);
+title('high pass filtered image of order 2')
+load hk;    % unknown filter
+f5=filter2(h,i1);
+f5=mat2gray(f5);
+figure
+imshow(f5);
+title('unknown filtered ')
+
+%% 3c
+
+clc;
+clear all;
+close all;
+load hbrus;   % filter
+N1=128;
+N2=256;
+n=filter2(h,rand(N1,N2)) %image-noise
+N_1=fft2(n);
+N_1=mat2gray(N_1);
+figure
+imshow(N_1)
+title('noisy image')
+load mandrill;
+figure
+i=imshow(X,map);
+title('original mandrill image')
+i=ind2gray(X,map);
+i=i(1:128,120:120+256-1);
+figure
+imshow(i);
+title('resized mandrill image')
+i1=i+n;
+i1=mat2gray(i1);
+figure
+imshow(i1);
+title('noise added to the resized mandrill image')
+load hlp1;    %low pass filter of order 1
+f1=filter2(h,i1);
+f1=mat2gray(f1);
+figure
+imshow(f1);
+title('image restoration using low pass filter of order 1')
+load hlp2;   %low pass filter of order 2
+f2=filter2(h,i1);
+f2=mat2gray(f2);
+figure
+imshow(f2);
+title('image restoration using low pass filter of order 2')
+load hhp1;   %high pass filter of order 1
+f3=filter2(h,i1);
+f3=mat2gray(f3);
+figure
+imshow(f3);
+title('image restoration using high pass filter of order 1')
+load hhp2;   %low pass filter of order 2
+f4=filter2(h,i1);
+f4=mat2gray(f4);
+figure
+imshow(f4);
+title('image restoration using high pass filter of order 2')
+load hk;    %unknown filter
+f5=filter2(h,i1);
+f5=mat2gray(f5);
+figure
+imshow(f5);
+title('image restoration using unknown filter')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
